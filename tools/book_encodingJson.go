@@ -2,6 +2,7 @@ package tools
 
 import (
 	"Go-json/model"
+	"bytes"
 	"encoding/json"
 )
 
@@ -12,11 +13,17 @@ import (
 **/
 
 func BookToJson(book *model.Book) (string, error) {
-	str, err := json.Marshal(book)
+	data, err := json.Marshal(book)
 	if err != nil {
 		return "", err
 	}
-	return string(str), nil
+	// 格式化json输出
+	var out bytes.Buffer
+	err = json.Indent(&out, data, "", "\t")
+	if err != nil{
+		return string(data), err
+	}
+	return out.String(), err
 }
 
 func JsonToBook(str string) (*model.Book, error) {
@@ -25,5 +32,6 @@ func JsonToBook(str string) (*model.Book, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return book, nil
 }
